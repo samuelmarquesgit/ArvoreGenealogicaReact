@@ -1,0 +1,81 @@
+.controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sheet-input-group {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.sheet-url-row {
+  display: flex;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.sheet-url-input {
+  flex: 1;
+  min-width: 180px;
+  padding: 0.45rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-family: 'Outfit', sans-serif;
+  background: white;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.sheet-url-input:focus {
+  border-color: var(--primary-soft);
+}
+
+.input-error {
+  font-size: 0.72rem;
+  color: #dc2626;
+  margin: 0;
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.history-label,
+.kinship-label,
+.branch-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.history-select,
+.kinship-select,
+.branch-select {
+  padding: 0.4rem 0.6rem;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-family: 'Outfit', sans-serif;
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  max-width: 200px;
+}
+
+.btn-link {
+  font-size: 0.78rem;
+  color: var(--primary-soft);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  color: var(--primary);
+}

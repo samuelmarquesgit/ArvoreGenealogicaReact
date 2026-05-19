@@ -1,0 +1,31 @@
+{
+  "name": "arvore-genealogica-frontend",
+  "version": "1.0.0",
+  "description": "Frontend React + Vite para Árvore Genealógica — Família Marques",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "d3": "^7.9.0",
+    "d3-flextree": "^2.1.2",
+    "d3-org-chart": "^3.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^2.0.5",
+    "jsdom": "^24.1.1",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.5"
+  }
+}

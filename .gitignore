@@ -1,0 +1,29 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+build/
+
+# Cache do Vite
+.vite/
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# Cobertura de testes
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

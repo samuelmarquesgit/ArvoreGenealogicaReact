@@ -1,0 +1,284 @@
+openapi: 3.1.0
+info:
+  title: Árvore Genealógica API
+  description: API backend para visualização interativa de árvores genealógicas via Google Sheets.
+  version: 1.0.0
+  contact:
+    name: Família Marques
+
+servers:
+  - url: http://localhost:3001
+    description: Desenvolvimento local
+
+tags:
+  - name: sheets
+    description: Leitura e processamento de planilhas Google Sheets
+
+paths:
+  /health:
+    get:
+      summary: Verificação de saúde do servidor
+      responses:
+        '200':
+          description: Servidor ativo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+
+  /api/sheets:
+    get:
+      tags: [sheets]
+      summary: Retorna CSV bruto da planilha (proxy para evitar CORS)
+      parameters:
+        - name: id
+          in: query
+          description: ID da planilha Google Sheets
+          schema:
+            type: string
+          example: 13PqSDZ4y3UePTXLc3sLHiGLcsNyLMSf28uwBzeeNAoA
+        - name: gid
+          in: query
+          description: ID da aba (tab)
+          schema:
+            type: string
+            default: '0'
+        - name: force
+          in: query
+          description: Ignora cache e busca dados frescos
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: CSV retornado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SheetCsvResponse'
+        '502':
+          description: Planilha inacessível
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/sheets/family:
+    get:
+      tags: [sheets]
+      summary: Retorna dados processados da árvore familiar prontos para D3-OrgChart
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+        - name: gid
+          in: query
+          schema:
+            type: string
+        - name: force
+          in: query
+          schema:
+            type: boolean
+        - name: focusId
+          in: query
+          description: Nome da pessoa para visão de parentesco (kinship view)
+          schema:
+            type: string
+        - name: branchKey
+          in: query
+          description: Chave do ramo para filtrar subárvore
+          schema:
+            type: string
+        - name: unified
+          in: query
+          description: Ativa modo unificado (combina múltiplas planilhas)
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Dados processados da árvore
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyDataResponse'
+
+  /api/sheets/cache:
+    delete:
+      tags: [sheets]
+      summary: Invalida cache do servidor para uma planilha específica
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: gid
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cache limpo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /api/sheets/parse-url:
+    post:
+      tags: [sheets]
+      summary: Extrai id e gid de uma URL do Google Sheets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://docs.google.com/spreadsheets/d/13PqSDZ4y3UePTXLc3sLHiGLcsNyLMSf28uwBzeeNAoA/edit#gid=0
+      responses:
+        '200':
+          description: ID e GID extraídos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  gid:
+                    type: string
+        '400':
+          description: URL inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    SheetCsvResponse:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Conteúdo CSV bruto
+        fromCache:
+          type: boolean
+        savedAt:
+          type: integer
+          description: Timestamp Unix (ms) da última atualização
+
+    FamilyDataResponse:
+      type: object
+      properties:
+        chartData:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonNode'
+        genealogyReport:
+          $ref: '#/components/schemas/GenealogyReport'
+        familyCtx:
+          $ref: '#/components/schemas/FamilyContext'
+        branches:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+              label:
+                type: string
+
+    PersonNode:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        spouse:
+          type: string
+        parentId:
+          type: string
+          nullable: true
+        parentsLine:
+          type: string
+        _lvl:
+          type: integer
+        _depth:
+          type: integer
+        _branchKey:
+          type: string
+        _cardBg:
+          type: string
+        _cardBorder:
+          type: string
+        _nameColor:
+          type: string
+        _roleColor:
+          type: string
+        _parentsColor:
+          type: string
+        _spouseColor:
+          type: string
+        _linkStroke:
+          type: string
+        _nameSizePx:
+          type: number
+        _kinshipRole:
+          type: string
+        _branchColor:
+          type: string
+
+    FamilyContext:
+      type: object
+      properties:
+        familyLabel:
+          type: string
+        founders:
+          type: array
+          items:
+            type: string
+        primaryFounderId:
+          type: string
+          nullable: true
+
+    GenealogyReport:
+      type: object
+      properties:
+        orderTable:
+          type: array
+        tiposFrequency:
+          type: array
+        unknownTipos:
+          type: array
+          items:
+            type: string
+        requiredWarnings:
+          type: array
+          items:
+            type: string
+        warnings:
+          type: array
+          items:
+            type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
