@@ -35,6 +35,6 @@ describe('parseSheetUrl', () => {
 
   it('retorna null para URL inválida', () => {
     expect(parseSheetUrl('https://google.com/nao-e-planilha')).toBeNull();
-    expect(parseSheetUrl('texto-qualquer-curto')).toBeNull();
+    expect(parseSheetUrl('curto')).toBeNull();
   });
 });
