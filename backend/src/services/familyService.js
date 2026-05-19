@@ -570,9 +570,10 @@ function getBranchEntries(data) {
 }
 
 function parseCsv(csvText) {
+  if (!csvText || !csvText.trim()) return [];
   const result = Papa.parse(csvText, { header: true, skipEmptyLines: 'greedy' });
   if (result.errors && result.errors.length) {
-    const critical = result.errors.filter(e => e.type === 'Delimiter' || e.type === 'FieldMismatch');
+    const critical = result.errors.filter(e => e.type === 'FieldMismatch');
     if (critical.length) throw new Error(`Erro ao interpretar CSV: ${critical[0].message}`);
   }
   return result.data;

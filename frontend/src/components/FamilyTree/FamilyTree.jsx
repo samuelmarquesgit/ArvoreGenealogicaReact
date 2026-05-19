@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import * as d3 from 'd3';
 import { OrgChart } from 'd3-org-chart';
 import { VIRTUAL_ROOT_ID, canNodeFocus } from '../../utils/treeUtils.js';
 import './FamilyTree.css';
 
-function buildNodeHtml(d, familyCtx, onBranchFocus) {
+function buildNodeHtml(d, familyCtx) {
   const isRoot = d.data.id === VIRTUAL_ROOT_ID;
   const focusable = canNodeFocus(d.data, familyCtx);
   const bk = d.data._branchKey;
@@ -45,9 +45,14 @@ function buildNodeHtml(d, familyCtx, onBranchFocus) {
   `;
 }
 
-export default function FamilyTree({ data, familyCtx, focusedBranchKey, onBranchFocus }) {
+const FamilyTree = forwardRef(function FamilyTree({ data, familyCtx, focusedBranchKey, onBranchFocus }, ref) {
   const containerRef = useRef(null);
   const chartRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    fit: () => chartRef.current?.fit?.(),
+    exportSvg: () => chartRef.current?.exportSvg?.(),
+  }));
 
   const handleClick = useCallback((e) => {
     const target = e.target.closest('[data-branch-focus]');
@@ -62,7 +67,6 @@ export default function FamilyTree({ data, familyCtx, focusedBranchKey, onBranch
   useEffect(() => {
     const container = containerRef.current;
     if (!container || !data || !data.length) return;
-
     container.addEventListener('click', handleClick);
     return () => container.removeEventListener('click', handleClick);
   }, [handleClick, data]);
@@ -96,7 +100,7 @@ export default function FamilyTree({ data, familyCtx, focusedBranchKey, onBranch
         const stroke = d?.data?._linkStroke ?? '#94a3b8';
         d3.select(this).attr('stroke', stroke).attr('stroke-width', 2).attr('opacity', 0.88);
       })
-      .nodeContent(d => buildNodeHtml(d, familyCtx, onBranchFocus))
+      .nodeContent(d => buildNodeHtml(d, familyCtx))
       .expandAll()
       .initialZoom(1.0)
       .render();
@@ -107,18 +111,9 @@ export default function FamilyTree({ data, familyCtx, focusedBranchKey, onBranch
     return () => {
       if (container) container.innerHTML = '';
     };
-  }, [data, focusedBranchKey, familyCtx, onBranchFocus]);
-
-  function fit() {
-    chartRef.current?.fit?.();
-  }
-
-  function exportSvg() {
-    chartRef.current?.exportSvg?.();
-  }
-
-  FamilyTree.fit = fit;
-  FamilyTree.exportSvg = exportSvg;
+  }, [data, focusedBranchKey, familyCtx]);
 
   return <div ref={containerRef} className="chart-container" />;
-}
+});
+
+export default FamilyTree;

@@ -24,8 +24,10 @@ describe('parseCsv', () => {
     expect(rows[0]['Nome(s)']).toBe('Hélio Marques');
   });
 
-  it('lança erro em CSV completamente inválido', () => {
-    expect(() => parseCsv('')).not.toThrow();
+  it('retorna array vazio para CSV vazio ou nulo', () => {
+    expect(parseCsv('')).toEqual([]);
+    expect(parseCsv(null)).toEqual([]);
+    expect(parseCsv('   ')).toEqual([]);
   });
 });
 

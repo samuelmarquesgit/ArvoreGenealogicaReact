@@ -113,8 +113,8 @@ function App() {
         unifiedMode={unifiedMode}
         onSheetChange={handleSheetChange}
         onRefresh={handleRefresh}
-        onFit={() => FamilyTree.fit?.()}
-        onExport={() => FamilyTree.exportSvg?.()}
+        onFit={() => treeRef.current?.fit?.()}
+        onExport={() => treeRef.current?.exportSvg?.()}
         onOpenAnalysis={() => setAnalysisOpen(true)}
         onSetIdentity={handleSetIdentity}
         onExitUnified={handleExitUnified}
