@@ -10,6 +10,8 @@ servers:
   - url: http://localhost:3001
     description: Desenvolvimento local
 
+security: []
+
 tags:
   - name: sheets
     description: Leitura e processamento de planilhas Google Sheets
@@ -17,7 +19,9 @@ tags:
 paths:
   /health:
     get:
+      operationId: getHealth
       summary: Verificação de saúde do servidor
+      security: []
       responses:
         '200':
           description: Servidor ativo
@@ -32,8 +36,10 @@ paths:
 
   /api/sheets:
     get:
+      operationId: getSheetCsv
       tags: [sheets]
       summary: Retorna CSV bruto da planilha (proxy para evitar CORS)
+      security: []
       parameters:
         - name: id
           in: query
@@ -60,8 +66,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SheetCsvResponse'
+        '400':
+          description: Parâmetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '502':
-          description: Planilha inacessível
+          description: Planilha inacessível no Google Sheets
           content:
             application/json:
               schema:
@@ -69,8 +81,10 @@ paths:
 
   /api/sheets/family:
     get:
+      operationId: getFamilyData
       tags: [sheets]
       summary: Retorna dados processados da árvore familiar prontos para D3-OrgChart
+      security: []
       parameters:
         - name: id
           in: query
@@ -96,7 +110,7 @@ paths:
             type: string
         - name: unified
           in: query
-          description: Ativa modo unificado (combina múltiplas planilhas)
+          description: Ativa modo unificado
           schema:
             type: boolean
       responses:
@@ -106,11 +120,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FamilyDataResponse'
+        '400':
+          description: Parâmetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Planilha inacessível
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/sheets/cache:
     delete:
+      operationId: deleteSheetCache
       tags: [sheets]
       summary: Invalida cache do servidor para uma planilha específica
+      security: []
       parameters:
         - name: id
           in: query
@@ -132,11 +160,19 @@ paths:
                 properties:
                   ok:
                     type: boolean
+        '400':
+          description: Parâmetros ausentes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/sheets/parse-url:
     post:
+      operationId: parseSheetUrl
       tags: [sheets]
       summary: Extrai id e gid de uma URL do Google Sheets
+      security: []
       requestBody:
         required: true
         content:
@@ -213,8 +249,7 @@ components:
         spouse:
           type: string
         parentId:
-          type: string
-          nullable: true
+          type: ['string', 'null']
         parentsLine:
           type: string
         _lvl:
@@ -254,8 +289,7 @@ components:
           items:
             type: string
         primaryFounderId:
-          type: string
-          nullable: true
+          type: ['string', 'null']
 
     GenealogyReport:
       type: object
