@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   backend:
     name: Backend
@@ -14,9 +17,9 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4.2.0
         with:
           node-version: 20
           cache: npm
@@ -35,7 +38,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: openapi-spec
-          path: backend/openapi.yaml
+          path: backend/docs/openapi.yaml
 
   frontend:
     name: Frontend
@@ -44,9 +47,9 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4.2.0
         with:
           node-version: 20
           cache: npm
@@ -67,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: backend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
       - uses: actions/download-artifact@v4
         with:
