@@ -9,7 +9,7 @@
     "lint": "eslint src/",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "build": "echo 'Backend sem etapa de build (Node.js puro)'"
+    "build": "rm -rf dist && mkdir -p dist && cp -r src package.json package-lock.json .env.example dist/"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -109,6 +109,12 @@ jobs:
           name: api-docs
           path: deploy/docs
 
+      - name: Listar artefatos prontos
+        run: |
+          echo "=== Backend ===" && ls deploy/backend/src/
+          echo "=== Frontend ===" && ls deploy/frontend/
+          echo "=== Docs ===" && ls deploy/docs/
+
       # Substitua pelo seu provedor (Railway, Render, Fly.io, AWS, etc.)
       - name: Deploy para produção
-        run: echo "Artefatos prontos em deploy/"
+        run: echo "Artefatos validados e prontos para deploy."
