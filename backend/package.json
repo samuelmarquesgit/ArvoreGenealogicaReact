@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "lint": "eslint src/",
     "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "build": "echo 'Backend sem etapa de build (Node.js puro)'"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -17,6 +19,8 @@
     "papaparse": "^5.4.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.5.0",
+    "eslint": "^9.5.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0"
