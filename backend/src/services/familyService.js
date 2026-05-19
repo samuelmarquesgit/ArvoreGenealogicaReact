@@ -10,11 +10,6 @@ const GENEALOGY_ORDER_TABLE = Object.freeze([
   { order: 4, label: 'Tataraneto(a)', tiposAceitos: ['Tataraneto', 'Tataraneta', 'Tatrarneto'] },
 ]);
 
-const FORCED_PAIR_DISPLAY_RULES = Object.freeze([
-  { primaryToken: 'lucio', secondaryToken: 'regina' },
-  { primaryToken: 'gilson', secondaryToken: 'sheila' },
-  { primaryToken: 'eduardo', secondaryToken: 'cecilia' },
-]);
 
 function normalizeTipoKey(s) {
   if (!s || typeof s !== 'string') return '';
